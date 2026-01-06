@@ -1,0 +1,60 @@
+{
+	"name": "@nexxonn-internal/workflow-designer-ui",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"clean": "rm -rf node_modules",
+		"check-types": "tsc --noEmit",
+		"format": "biome check --write .",
+		"test": "vitest"
+	},
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"@nexxonn-internal/ui": "workspace:^",
+		"@nexxonn-ai/action-registry": "workspace:*",
+		"@nexxonn-ai/nexxonn": "workspace:*",
+		"@nexxonn-ai/language-model": "workspace:^",
+		"@nexxonn-ai/language-model-registry": "workspace:*",
+		"@nexxonn-ai/node-registry": "workspace:*",
+		"@nexxonn-ai/protocol": "workspace:*",
+		"@nexxonn-ai/react": "workspace:*",
+		"@nexxonn-ai/text-editor": "workspace:^",
+		"@nexxonn-ai/text-editor-utils": "workspace:^",
+		"@nexxonn-ai/trigger-registry": "workspace:*",
+		"@nexxonn-ai/utils": "workspace:*",
+		"@nexxonn-ai/workspace-utils": "workspace:*",
+		"@xyflow/react": "catalog:",
+		"boring-avatars": "1.11.1",
+		"clsx": "catalog:",
+		"fast-levenshtein": "catalog:",
+		"lucide-react": "catalog:",
+		"motion": "catalog:",
+		"next": "catalog:",
+		"radix-ui": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"react-resizable-panels": "catalog:",
+		"streamdown": "catalog:",
+		"swr": "catalog:",
+		"zustand": "catalog:"
+	},
+	"devDependencies": {
+		"@nexxonn-ai/tsconfig": "workspace:*",
+		"@types/fast-levenshtein": "catalog:",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"ai": "catalog:",
+		"pino": "catalog:",
+		"tailwindcss": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"peerDependencies": {
+		"pino": "catalog:",
+		"zod": "catalog:"
+	}
+}

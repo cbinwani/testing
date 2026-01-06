@@ -1,0 +1,4 @@
+{
+	"extends": "@nexxonn-ai/tsconfig/react-library.json",
+	"include": ["."]
+}

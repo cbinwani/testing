@@ -1,0 +1,5 @@
+{
+	"extends": "@nexxonn-ai/tsconfig/node-library.json",
+	"include": ["."],
+	"exclude": ["node_modules"]
+}

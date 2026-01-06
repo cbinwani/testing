@@ -1,0 +1,60 @@
+{
+	"name": "@nexxonn-ai/nexxonn",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"check-types": "tsc --noEmit",
+		"clean": "rm -rf .turbo dist next react node_modules",
+		"test": "vitest run",
+		"format": "biome check --write ."
+	},
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"default": "./dist/index.js"
+		}
+	},
+	"devDependencies": {
+		"@nexxonn-ai/protocol": "workspace:*",
+		"@nexxonn-ai/rag": "workspace:^",
+		"@nexxonn-ai/tsconfig": "workspace:*",
+		"@types/pg": "catalog:",
+		"@zod/core": "0.11.6",
+		"tsup": "catalog:",
+		"vitest": "catalog:"
+	},
+	"dependencies": {
+		"@ai-sdk/anthropic": "catalog:",
+		"@ai-sdk/fal": "catalog:",
+		"@ai-sdk/gateway": "catalog:",
+		"@ai-sdk/google": "catalog:",
+		"@ai-sdk/openai": "catalog:",
+		"@ai-sdk/provider": "catalog:",
+		"@nexxonn-ai/action-registry": "workspace:*",
+		"@nexxonn-ai/github-tool": "workspace:^",
+		"@nexxonn-ai/language-model": "workspace:^",
+		"@nexxonn-ai/language-model-registry": "workspace:*",
+		"@nexxonn-ai/logger": "workspace:*",
+		"@nexxonn-ai/node-registry": "workspace:*",
+		"@nexxonn-ai/storage": "workspace:*",
+		"@nexxonn-ai/stream": "workspace:*",
+		"@nexxonn-ai/text-editor-utils": "workspace:^",
+		"@nexxonn-ai/trigger-registry": "workspace:*",
+		"@nexxonn-ai/vault": "workspace:*",
+		"@nexxonn-ai/web-search": "workspace:^",
+		"@nexxonn-ai/workspace-utils": "workspace:*",
+		"ai": "catalog:",
+		"openai": "catalog:",
+		"pg": "catalog:"
+	},
+	"peerDependencies": {
+		"zod": "catalog:"
+	}
+}

@@ -1,0 +1,54 @@
+{
+	"name": "playground",
+	"version": "0.1.0",
+	"engines": {
+		"node": "24.x"
+	},
+	"packageManager": "pnpm@10.16.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"clean": "rm -rf .next .turbo node_modules",
+		"build": "next build --turbopack",
+		"start": "next start",
+		"lint": "next lint",
+		"typegen": "next typegen",
+		"check-types": "tsc --noEmit",
+		"format": "biome check --write ."
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "catalog:",
+		"@nexxonn-internal/ui": "workspace:^",
+		"@nexxonn-internal/workflow-designer-ui": "workspace:*",
+		"@nexxonn-ai/nexxonn": "workspace:*",
+		"@nexxonn-ai/langfuse": "workspace:^",
+		"@nexxonn-ai/language-model": "workspace:*",
+		"@nexxonn-ai/nextjs": "workspace:*",
+		"@nexxonn-ai/protocol": "workspace:*",
+		"@nexxonn-ai/react": "workspace:*",
+		"@nexxonn-ai/storage": "workspace:*",
+		"@nexxonn-ai/supabase-driver": "workspace:^",
+		"@nexxonn-ai/vault": "workspace:*",
+		"@supabase/realtime-js": "^2.86.0",
+		"@supabase/supabase-js": "catalog:",
+		"clsx": "catalog:",
+		"happy-dom": "catalog:",
+		"jsdom": "catalog:",
+		"lucide-react": "catalog:",
+		"next": "catalog:",
+		"pg": "catalog:",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "catalog:",
+		"@tailwindcss/postcss": "catalog:",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"postcss": "catalog:",
+		"tailwindcss": "catalog:",
+		"typescript": "catalog:"
+	}
+}

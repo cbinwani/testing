@@ -1,0 +1,6 @@
+Contact: mailto:security@nexxonn.ai
+Expires: 2026-05-06T23:59:59Z
+
+Preferred-Languages: en, ja
+Policy: https://github.com/nexxonn-ai/nexxonn/security/policy
+Canonical: https://studio.nexxonn.ai/.well-known/security.txt

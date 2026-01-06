@@ -1,0 +1,158 @@
+import type { NexxonnIntegrationConfig } from "@nexxonn-ai/nexxonn";
+import { traceGeneration } from "@nexxonn-ai/langfuse";
+import type { LanguageModelProvider } from "@nexxonn-ai/language-model";
+import { NextNexxonn } from "@nexxonn-ai/nextjs/internal";
+import { WorkspaceId } from "@nexxonn-ai/protocol";
+import { fsStorageDriver } from "@nexxonn-ai/storage";
+import { supabaseStorageDriver as experimental_supabaseStorageDriver } from "@nexxonn-ai/supabase-driver";
+import { nodeVaultDriver } from "./lib/vault-driver";
+
+const isVercelEnvironment = process.env.VERCEL === "1";
+
+function parseEnvNumber(value: string | undefined, fallback: number): number {
+	const parsed = Number(value);
+	return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+const storage = isVercelEnvironment
+	? experimental_supabaseStorageDriver({
+			endpoint: process.env.SUPABASE_STORAGE_URL ?? "",
+			region: process.env.SUPABASE_STORAGE_REGION ?? "",
+			accessKeyId: process.env.SUPABASE_STORAGE_ACCESS_KEY_ID ?? "",
+			secretAccessKey: process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY ?? "",
+			bucket: "app",
+		})
+	: fsStorageDriver({
+			root: "./.storage",
+		});
+
+const llmProviders: LanguageModelProvider[] = [];
+if (process.env.OPENAI_API_KEY) {
+	llmProviders.push("openai");
+}
+if (process.env.ANTHROPIC_API_KEY) {
+	llmProviders.push("anthropic");
+}
+if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+	llmProviders.push("google");
+}
+
+if (llmProviders.length === 0) {
+	throw new Error("No LLM providers configured");
+}
+
+if (process.env.VAULT_SECRET === undefined) {
+	throw new Error("VAULT_SECRET is not defined");
+}
+
+const integrationConfigs: NexxonnIntegrationConfig = {};
+
+const githubAppId = process.env.GITHUB_APP_ID;
+const githubAppPrivateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+const githubAppClientId = process.env.GITHUB_APP_CLIENT_ID;
+const githubAppClientSecret = process.env.GITHUB_APP_CLIENT_SECRET;
+const githubAppWebhookSecret = process.env.GITHUB_APP_WEBHOOK_SECRET;
+
+if (
+	githubAppId !== undefined &&
+	githubAppPrivateKey !== undefined &&
+	githubAppClientId !== undefined &&
+	githubAppClientSecret !== undefined &&
+	githubAppWebhookSecret !== undefined
+) {
+	integrationConfigs.github = {
+		auth: {
+			strategy: "app-installation",
+			appId: "",
+			privateKey: "",
+			resolver: {
+				installationIdForRepo: () => 1234,
+				installationIds: () => [1234],
+			},
+		},
+		authV2: {
+			appId: githubAppId,
+			privateKey: githubAppPrivateKey,
+			clientId: githubAppClientId,
+			clientSecret: githubAppClientSecret,
+			webhookSecret: githubAppWebhookSecret,
+		},
+	};
+}
+// if (
+// 	process.env.GITHUB_APP_ID &&
+// 	process.env.GITHUB_APP_PRIVATE_KEY &&
+// 	process.env.GITHUB_APP_CLIENT_ID &&
+// 	process.env.GITHUB_APP_CLIENT_SECRET
+// ) {
+// 	integrationConfigs.push({
+// 		provider: "github",
+// 		auth: {
+// 			strategy: "github-installation",
+// 			appId: process.env.GITHUB_APP_ID,
+// 			privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
+// 		},
+// 	});
+// }
+// if (process.env.GITHUB_TOKEN) {
+// 	integrationConfigs = {
+// 		github: {
+// 			auth: {
+// 				strategy: "personal-access-token",
+// 				personalAccessToken: process.env.GITHUB_TOKEN,
+// 			},
+// 		},
+// 	};
+// }
+
+let sampleAppWorkspaceIds: WorkspaceId[] | undefined;
+if (process.env.SAMPLE_APP_WORKSPACE_IDS) {
+	const workspaceIdStrings = process.env.SAMPLE_APP_WORKSPACE_IDS.split(",")
+		.map((id) => id.trim())
+		.filter((id) => id.length > 0);
+	const parsedWorkspaceIds: WorkspaceId[] = [];
+	for (const workspaceIdString of workspaceIdStrings) {
+		const parseResult = WorkspaceId.safeParse(workspaceIdString);
+		if (parseResult.success) {
+			parsedWorkspaceIds.push(parseResult.data);
+		}
+	}
+	if (parsedWorkspaceIds.length > 0) {
+		sampleAppWorkspaceIds = parsedWorkspaceIds;
+	}
+}
+
+export const nexxonn = NextNexxonn({
+	basePath: "/api/nexxonn",
+	storage,
+	llmProviders,
+	apiSecretScrypt: {
+		params: {
+			n: parseEnvNumber(process.env.NEXXONN_API_SECRET_SCRYPT_N, 16384),
+			r: parseEnvNumber(process.env.NEXXONN_API_SECRET_SCRYPT_R, 8),
+			p: parseEnvNumber(process.env.NEXXONN_API_SECRET_SCRYPT_P, 1),
+			keyLen: parseEnvNumber(process.env.NEXXONN_API_SECRET_SCRYPT_KEY_LEN, 32),
+		},
+		saltBytes: parseEnvNumber(
+			process.env.NEXXONN_API_SECRET_SCRYPT_SALT_BYTES,
+			16,
+		),
+		logDuration: process.env.NEXXONN_API_SECRET_SCRYPT_LOG_DURATION === "1",
+	},
+	integrationConfigs,
+	sampleAppWorkspaceIds,
+	callbacks: {
+		generationComplete: async (args) => {
+			try {
+				await traceGeneration(args);
+			} catch (error) {
+				console.error("Trace generation failed:", error);
+			}
+		},
+	},
+	vault: nodeVaultDriver({
+		secret: process.env.VAULT_SECRET,
+	}),
+	experimental_contentGenerationNode: true,
+	logger: console,
+});

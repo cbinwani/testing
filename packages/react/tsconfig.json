@@ -1,0 +1,5 @@
+{
+	"extends": "@nexxonn-ai/tsconfig/react-library.json",
+	"include": ["."],
+	"exclude": ["node_modules"]
+}

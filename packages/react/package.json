@@ -1,0 +1,44 @@
+{
+	"name": "@nexxonn-ai/react",
+	"version": "0.0.0",
+	"private": true,
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"check-types": "tsc --noEmit",
+		"clean": "rm -rf .turbo dist next react node_modules",
+		"format": "biome check --write ."
+	},
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js",
+			"default": "./dist/index.js"
+		}
+	},
+	"devDependencies": {
+		"@nexxonn-ai/protocol": "workspace:*",
+		"@nexxonn-ai/tsconfig": "workspace:*",
+		"@types/react": "catalog:",
+		"tsup": "catalog:",
+		"vitest": "catalog:",
+		"zustand": "catalog:"
+	},
+	"dependencies": {
+		"@nexxonn-ai/nexxonn": "workspace:*",
+		"@nexxonn-ai/http": "workspace:*",
+		"@nexxonn-ai/language-model": "workspace:^",
+		"@nexxonn-ai/stream": "workspace:*",
+		"ai": "catalog:",
+		"react": "catalog:",
+		"swr": "catalog:"
+	},
+	"peerDependencies": {
+		"zod": "catalog:",
+		"zustand": "catalog:"
+	}
+}

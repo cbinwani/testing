@@ -1,0 +1,5 @@
+{
+	"extends": "@nexxonn-ai/tsconfig/node-library",
+	"include": ["."],
+	"exclude": ["node_modules"]
+}
